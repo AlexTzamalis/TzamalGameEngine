@@ -135,7 +135,7 @@ public final class Input {
     private static double scrollY;
 
     private Input() {
-        // Utility class — no instances.
+        // Utility class - no instances.
     }
 
     //  Callback installation (engine-internal)
