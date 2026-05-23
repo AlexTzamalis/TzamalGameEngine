@@ -1,0 +1,23 @@
+/*
+ * Game module build script.
+ *
+ * This module depends ONLY on the engine project.
+ * All low-level access is provided through engine abstractions.
+ *
+ * the game can be launched straight from Gradle: ./gradlew :game:run
+ */
+
+plugins {
+    id 'application'
+}
+
+dependencies {
+    implementation project(':engine')
+}
+
+/*
+ * ".mygame" package endpoint is a placeholder name for when a game is created
+ */
+application {
+    mainClass = 'me.alextzamalis.mygame.Main'
+}
