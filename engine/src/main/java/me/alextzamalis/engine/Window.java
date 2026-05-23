@@ -47,7 +47,7 @@ public class Window {
      * <p>The engine calls these four methods in a well-defined order
      * during the lifetime of the application:</p>
      * <ol>
-     *   <li>{@link #init()} once, after the OpenGL context is ready.</li>
+     *   <li>{@link #init(Window)} once, after the OpenGL context is ready.</li>
      *   <li>{@link #update(float)} once per frame, with the elapsed
      *       time since the previous frame in seconds.</li>
      *   <li>{@link #render()} once per frame, immediately after
@@ -70,8 +70,12 @@ public class Window {
          * <p>Use this to load textures, compile shaders, set up vertex
          * buffers, or perform any other one-time initialisation that
          * requires a live GL context.</p>
+         *
+         * @param window the engine Window instance. Store this reference
+         *               if you need to call {@link Window#requestClose()}
+         *               or query the window dimensions later.
          */
-        void init();
+        void init(Window window);
 
         /**
          * Called once per frame with the time elapsed since the last
@@ -166,7 +170,7 @@ public class Window {
      * <ol>
      *   <li>GLFW init &amp; window creation</li>
      *   <li>{@link Input#install(long)} registers key/mouse callbacks</li>
-     *   <li>{@link GameLifecycle#init()}</li>
+     *   <li>{@link GameLifecycle#init(Window)}</li>
      *   <li>Loop: poll events > compute delta > {@code update(dt)} > clear > {@code render()} > swap > {@link Input#endFrame()}</li>
      *   <li>{@link GameLifecycle#dispose()}</li>
      *   <li>GLFW teardown</li>
@@ -179,7 +183,7 @@ public class Window {
         try {
             initGlfw();
             Input.install(glfwWindow);
-            game.init();
+            game.init(this);
             loop(game);
         } finally {
             game.dispose();
@@ -236,6 +240,16 @@ public class Window {
      */
     public long getHandle() {
         return glfwWindow;
+    }
+
+    /**
+     * Signals GLFW that this window should close.
+     *
+     * <p>The game loop will exit on the next iteration. This lets game
+     * code request a shutdown without importing GLFW.</p>
+     */
+    public void requestClose() {
+        glfwSetWindowShouldClose(glfwWindow, true);
     }
 
     //  GLFW initialisation (private!!)
