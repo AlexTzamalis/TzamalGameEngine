@@ -83,11 +83,13 @@ public final class Input {
     public static final int KEY_LEFT  = GLFW_KEY_LEFT;
     public static final int KEY_RIGHT = GLFW_KEY_RIGHT;
 
-    /* WASD */
+    /* WASD and nearby keys */
     public static final int KEY_W = GLFW_KEY_W;
     public static final int KEY_A = GLFW_KEY_A;
     public static final int KEY_S = GLFW_KEY_S;
     public static final int KEY_D = GLFW_KEY_D;
+    public static final int KEY_Q = GLFW_KEY_Q;
+    public static final int KEY_E = GLFW_KEY_E;
 
     /* Number row */
     public static final int KEY_0 = GLFW_KEY_0;

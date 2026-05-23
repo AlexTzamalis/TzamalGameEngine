@@ -315,6 +315,9 @@ public class Window {
         glfwSwapInterval(1); // V-Sync: swap every monitor refresh
         GL.createCapabilities();
 
+        glEnable(GL_BLEND);
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
         glfwSetFramebufferSizeCallback(glfwWindow, (window, w, h) -> {
             this.width = w;
             this.height = h;
