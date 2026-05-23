@@ -1,4 +1,4 @@
-package me.alextzamalis.engine;
+package me.alextzamalis.engine.scene;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,7 +28,6 @@ import java.util.List;
  *
  * @author Alexandros Tzamalis
  * @see Sprite
- * @see SpriteSheet
  */
 public class Animation {
 

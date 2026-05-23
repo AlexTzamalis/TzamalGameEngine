@@ -1,4 +1,6 @@
-package me.alextzamalis.engine;
+package me.alextzamalis.engine.graphics;
+
+import me.alextzamalis.engine.scene.Sprite;
 
 import org.joml.Vector2f;
 import org.joml.Vector4f;

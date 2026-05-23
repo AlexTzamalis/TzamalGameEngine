@@ -1,4 +1,4 @@
-package me.alextzamalis.engine;
+package me.alextzamalis.engine.core;
 
 import static org.lwjgl.glfw.GLFW.*;
 
@@ -51,7 +51,6 @@ import static org.lwjgl.glfw.GLFW.*;
  * no synchronisation is needed.</p>
  *
  * @author Alexandros Tzamalis
- * @see Window
  */
 public final class Input {
 
@@ -145,9 +144,10 @@ public final class Input {
     /**
      * Registers GLFW input callbacks on the given window.
      *
-     * <p>Called once by {@link Window#run(Window.GameLifecycle)} right
-     * after the window has been created and the GL context is current.
-     * Game code should <strong>never</strong> call this directly.</p>
+     * <p>Engine-internal. Game code should not call this.</p>
+     *
+     * <p>Called once by {@code Window.run()} right
+     * after the window has been created and the GL context is current.</p>
      *
      * <p>Four callbacks are installed:</p>
      * <ol>
@@ -164,7 +164,7 @@ public final class Input {
      * @param windowHandle the GLFW window handle obtained from
      *                     {@code glfwCreateWindow}.
      */
-    static void install(long windowHandle) {
+    public static void install(long windowHandle) {
         glfwSetKeyCallback(windowHandle, (window, key, scancode, action, mods) -> {
             if (key >= 0 && key < NUM_KEYS) {
                 currentKeys[key] = (action != GLFW_RELEASE);
@@ -198,12 +198,14 @@ public final class Input {
      * Snapshots the current input state into the "previous" buffers
      * and resets per-frame accumulators.
      *
-     * <p>Called by {@link Window} at the very end of each game-loop
+     * <p>Engine-internal. Game code should not call this.</p>
+     *
+     * <p>Called by {@code Window} at the very end of each game-loop
      * iteration, after buffer swap. This ensures that
      * edge-detection methods like {@link #isKeyJustPressed(int)}
      * compare against exactly one frame's worth of input.</p>
      */
-    static void endFrame() {
+    public static void endFrame() {
         System.arraycopy(currentKeys, 0, previousKeys, 0, NUM_KEYS);
         System.arraycopy(currentMouseButtons, 0, previousMouseButtons, 0, NUM_MOUSE_BUTTONS);
         scrollX = 0.0;
@@ -215,11 +217,11 @@ public final class Input {
      * Returns {@code true} while the given key is held down.
      *
      * <p>This is useful for continuous actions like movement. For
-     * one-shot actions (&nbsp;jump) prefer
+     * one-shot actions ( jump) prefer
      * {@link #isKeyJustPressed(int)}.</p>
      *
      * @param keyCode one of the {@code KEY_*} constants defined in
-     *                this class (&nbsp;{@link #KEY_W}).
+     *                this class ( {@link #KEY_W}).
      * @return {@code true} if the key is currently pressed.
      */
     public static boolean isKeyPressed(int keyCode) {
@@ -258,7 +260,7 @@ public final class Input {
      * Returns {@code true} while the given mouse button is held.
      *
      * @param button one of the {@code MOUSE_BUTTON_*} constants
-     *               (&nbsp;{@link #MOUSE_BUTTON_LEFT}).
+     *               ( {@link #MOUSE_BUTTON_LEFT}).
      * @return {@code true} if the button is currently pressed.
      */
     public static boolean isMouseButtonPressed(int button) {
@@ -293,7 +295,7 @@ public final class Input {
      *
      * <p><strong>Note:</strong> In OpenGL the Y axis typically points
      * up, but GLFW reports screen-space Y pointing
-     * down<.  If you need GL coordinates, compute
+     * down.  If you need GL coordinates, compute
      * {@code windowHeight - getMouseY()}.</p>
      *
      * @return cursor Y position (top-left origin, Y-down).

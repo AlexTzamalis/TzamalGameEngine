@@ -1,4 +1,7 @@
-package me.alextzamalis.engine;
+package me.alextzamalis.engine.collision;
+
+import me.alextzamalis.engine.scene.GameObject;
+import me.alextzamalis.engine.scene.Transform;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -1,4 +1,4 @@
-package me.alextzamalis.engine;
+package me.alextzamalis.engine.graphics;
 
 import org.lwjgl.system.MemoryStack;
 
@@ -34,7 +34,6 @@ import static org.lwjgl.stb.STBImage.*;
  * @author Alexandros Tzamalis
  * @see Shader
  * @see BatchRenderer
- * @see AssetManager
  */
 public class Texture {
 

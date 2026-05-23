@@ -1,7 +1,7 @@
-package me.alextzamalis.engine;
+package me.alextzamalis.engine.scene;
 
-import org.joml.Vector2f;
-import org.joml.Vector4f;
+import me.alextzamalis.engine.graphics.BatchRenderer;
+import me.alextzamalis.engine.graphics.Camera2D;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -103,7 +103,7 @@ public class Scene {
 
     /**
      * Disposes scene resources. Currently a no-op since individual
-     * textures/shaders are managed by {@link AssetManager}.
+     * textures/shaders are managed by the AssetManager.
      */
     public void dispose() {
         gameObjects.clear();

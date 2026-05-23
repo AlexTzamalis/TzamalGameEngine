@@ -1,4 +1,7 @@
-package me.alextzamalis.engine;
+package me.alextzamalis.engine.assets;
+
+import me.alextzamalis.engine.graphics.Shader;
+import me.alextzamalis.engine.graphics.Texture;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -51,7 +54,7 @@ public final class AssetManager {
         return shaders.get(name);
     }
 
-    // Texture management=
+    // Texture management
     /**
      * Returns a cached texture for the given file path, loading it
      * from disk if this is the first request.
@@ -83,8 +86,8 @@ public final class AssetManager {
     /**
      * Disposes every cached shader and texture, then clears the maps.
      *
-     * <p>Call this once during engine shutdown (typically from
-     * {@link Window.GameLifecycle#dispose()}).</p>
+     * <p>Call this once during engine shutdown (typically from the
+     * game's dispose method).</p>
      */
     public static void disposeAll() {
         for (Shader s : shaders.values()) {

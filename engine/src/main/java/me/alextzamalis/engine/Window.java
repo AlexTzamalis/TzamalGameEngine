@@ -1,5 +1,7 @@
 package me.alextzamalis.engine;
 
+import me.alextzamalis.engine.core.Input;
+
 import org.lwjgl.glfw.GLFWErrorCallback;
 import org.lwjgl.glfw.GLFWVidMode;
 import org.lwjgl.opengl.GL;

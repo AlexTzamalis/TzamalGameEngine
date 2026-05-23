@@ -1,4 +1,6 @@
-package me.alextzamalis.engine;
+package me.alextzamalis.engine.collision;
+
+import me.alextzamalis.engine.scene.Transform;
 
 /**
  * A simple axis-aligned bounding box for 2D overlap detection.

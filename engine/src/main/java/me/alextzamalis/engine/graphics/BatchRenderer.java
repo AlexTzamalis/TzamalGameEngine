@@ -1,4 +1,4 @@
-package me.alextzamalis.engine;
+package me.alextzamalis.engine.graphics;
 
 import org.joml.Matrix4f;
 import org.joml.Vector2f;
@@ -324,7 +324,7 @@ public class BatchRenderer {
      * Deletes the VAO, VBO, and EBO.
      *
      * <p>Does not delete the shader, which is owned externally
-     * (typically by the {@link AssetManager}).</p>
+     * (typically by the AssetManager).</p>
      */
     public void dispose() {
         glDeleteVertexArrays(vaoId);

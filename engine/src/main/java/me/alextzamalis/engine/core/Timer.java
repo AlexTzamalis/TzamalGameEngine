@@ -1,4 +1,4 @@
-package me.alextzamalis.engine;
+package me.alextzamalis.engine.core;
 
 /**
  * A simple countdown timer for cooldowns, delays, and repeating events.

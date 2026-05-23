@@ -1,4 +1,4 @@
-package me.alextzamalis.engine;
+package me.alextzamalis.engine.scene;
 
 import org.joml.Vector2f;
 
