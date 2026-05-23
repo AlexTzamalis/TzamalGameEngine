@@ -1,0 +1,39 @@
+/*
+ * Engine module build script.
+ *
+ * This is the "heart" of TzamalGameEngine it owns every low-level
+ * dependency (LWJGL, ImGui, JOML) so the game module never has to
+ * import a single OpenGL or GLFW class. (that is the reason for the multi-gradle-project!!)
+ *
+ * JOML is exposed via the "api" because game code legitimately needs
+ * vectors and matrices for positioning, camera work, etc......
+ */
+
+plugins {
+    id 'java-library'
+}
+
+dependencies {
+    /* LWJGL Bill-of-Materials (locks every LWJGL artifact to the same version)*/
+    api platform("org.lwjgl:lwjgl-bom:${rootProject.ext.lwjglVersion}")
+
+    /* LWJGL modules (implementation hidden from game module)*/
+    implementation 'org.lwjgl:lwjgl'
+    implementation 'org.lwjgl:lwjgl-glfw'
+    implementation 'org.lwjgl:lwjgl-opengl'
+    implementation 'org.lwjgl:lwjgl-stb'
+
+    /* Platform-specific native JARs (only needed at runtime)*/
+    runtimeOnly "org.lwjgl:lwjgl::${rootProject.ext.lwjglNatives}"
+    runtimeOnly "org.lwjgl:lwjgl-glfw::${rootProject.ext.lwjglNatives}"
+    runtimeOnly "org.lwjgl:lwjgl-opengl::${rootProject.ext.lwjglNatives}"
+    runtimeOnly "org.lwjgl:lwjgl-stb::${rootProject.ext.lwjglNatives}"
+
+    /* JOML (api game code needs vectors/matrices directly)*/
+    api "org.joml:joml:${rootProject.ext.jomlVersion}"
+
+    /* ImGui-Java (implementation engine-internal tooling)*/
+    implementation "io.github.spair:imgui-java-binding:${rootProject.ext.imguiVersion}"
+    implementation "io.github.spair:imgui-java-lwjgl3:${rootProject.ext.imguiVersion}"
+    runtimeOnly "io.github.spair:${rootProject.ext.imguiNativesArtifact}:${rootProject.ext.imguiVersion}"
+}
