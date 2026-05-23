@@ -1,24 +1,30 @@
 package me.alextzamalis.mygame;
 
+import me.alextzamalis.engine.Animation;
 import me.alextzamalis.engine.AssetManager;
 import me.alextzamalis.engine.BatchRenderer;
 import me.alextzamalis.engine.Camera2D;
+import me.alextzamalis.engine.CollisionSystem;
 import me.alextzamalis.engine.GameObject;
 import me.alextzamalis.engine.Input;
 import me.alextzamalis.engine.Scene;
 import me.alextzamalis.engine.Shader;
 import me.alextzamalis.engine.Sprite;
+import me.alextzamalis.engine.Timer;
 import me.alextzamalis.engine.Transform;
 import me.alextzamalis.engine.Window;
 import org.joml.Vector2f;
 import org.joml.Vector4f;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Entry point for a demo game using the Tzamal Game Engine.
  *
- * <p>Demonstrates Phase 3 features: Camera2D with WASD movement and
- * zoom, Scene management with multiple GameObjects sorted by z-index,
- * and the Sprite/Transform component model.</p>
+ * <p>Demonstrates Phase 4 features: Animation with color cycling,
+ * AABB collision detection, Timer utility, and all Phase 3 features
+ * (Camera2D with WASD/zoom, Scene, Sprite/Transform).</p>
  *
  * <h2>Controls</h2>
  * <ul>
@@ -41,6 +47,15 @@ public class Main implements Window.GameLifecycle {
 
     private int lastWidth;
     private int lastHeight;
+
+    // Phase 4 demo objects
+    private GameObject animatedObject;
+    private Animation colorAnimation;
+    private GameObject colliderA;
+    private GameObject colliderB;
+    private List<GameObject> collisionTargets;
+    private boolean wasColliding;
+    private Timer messageTimer;
 
     // Application entry point
 
@@ -77,13 +92,14 @@ public class Main implements Window.GameLifecycle {
 
         scene = new Scene();
         createDemoObjects();
+        createPhase4Demo();
 
-        // console help messages for inputs
-        System.out.println("[Game] Phase 3 demo initialised.");
+        System.out.println("[Game] Phase 4 demo initialised.");
         System.out.println("[Game] Controls:");
-        System.out.println(" WASD - Move camera");
-        System.out.println(" Q/E  - Zoom in / out");
-        System.out.println(" ESC  - Exit");
+        System.out.println("  WASD - Move camera");
+        System.out.println("  Q/E  - Zoom in / out");
+        System.out.println("  ESC  - Exit");
+        System.out.println("[Game] Watch the console for collision and timer events.");
     }
 
     @Override
@@ -113,10 +129,10 @@ public class Main implements Window.GameLifecycle {
 
         // Zoom control
         float zoom = camera.getZoom();
-        if (Input.isKeyPressed(Input.KEY_Q)) {
+        if (Input.getScrollY() > 0) {
             zoom += ZOOM_SPEED * deltaTime;
         }
-        if (Input.isKeyPressed(Input.KEY_E)) {
+        if (Input.getScrollY() < 0) {
             zoom -= ZOOM_SPEED * deltaTime;
         }
         if (zoom < 0.1f) {
@@ -132,6 +148,32 @@ public class Main implements Window.GameLifecycle {
             lastWidth = window.getWidth();
             lastHeight = window.getHeight();
             camera.adjustProjection(lastWidth, lastHeight);
+        }
+
+        // Phase 4: update animation
+        colorAnimation.update(deltaTime);
+        animatedObject.addSprite(colorAnimation.getCurrentFrame());
+
+        // Phase 4: move colliderB back and forth to demonstrate collision
+        Transform tb = colliderB.getTransform();
+        tb.position.x += 60f * deltaTime;
+        if (tb.position.x > 100f) {
+            tb.position.x = -250f;
+        }
+
+        // Phase 4: check collision between the two collider objects
+        boolean colliding = CollisionSystem.collides(colliderA, colliderB);
+        if (colliding && !wasColliding) {
+            System.out.println("[Collision] colliderA and colliderB are overlapping!");
+        } else if (!colliding && wasColliding) {
+            System.out.println("[Collision] colliderA and colliderB separated.");
+        }
+        wasColliding = colliding;
+
+        // Phase 4: timer fires a message every 2 seconds
+        messageTimer.update(deltaTime);
+        if (messageTimer.isReady()) {
+            System.out.println("[Timer] 2-second tick fired.");
         }
 
         scene.update(deltaTime);
@@ -154,8 +196,8 @@ public class Main implements Window.GameLifecycle {
         System.out.println("[Game] dispose() complete. All resources freed.");
     }
 
-    // Demo scene setup with random and demo colored cubes
-    // Basicly Testing the shaders and the color transitioning etc.
+    // Phase 3 demo objects
+
     private void createDemoObjects() {
         GameObject ground = new GameObject("ground",
                 new Transform(new Vector2f(-400f, -200f), new Vector2f(800f, 50f)));
@@ -204,5 +246,48 @@ public class Main implements Window.GameLifecycle {
         orange.addSprite(new Sprite(new Vector4f(1f, 0.5f, 0.1f, 1f)));
         orange.setZIndex(1);
         scene.addGameObject(orange);
+    }
+
+    // Phase 4 demo: Animation, Collision, and Timer
+
+    private void createPhase4Demo() {
+        // Animation demo: an object that cycles through solid colors
+        List<Sprite> colorFrames = new ArrayList<>();
+        colorFrames.add(new Sprite(new Vector4f(1f, 0f, 0f, 1f)));
+        colorFrames.add(new Sprite(new Vector4f(0f, 1f, 0f, 1f)));
+        colorFrames.add(new Sprite(new Vector4f(0f, 0f, 1f, 1f)));
+        colorFrames.add(new Sprite(new Vector4f(1f, 1f, 0f, 1f)));
+        colorFrames.add(new Sprite(new Vector4f(1f, 0f, 1f, 1f)));
+        colorFrames.add(new Sprite(new Vector4f(0f, 1f, 1f, 1f)));
+
+        colorAnimation = new Animation(colorFrames, 0.4f);
+
+        animatedObject = new GameObject("animated_block",
+                new Transform(new Vector2f(-300f, 100f), new Vector2f(60f, 60f)));
+        animatedObject.addSprite(colorAnimation.getCurrentFrame());
+        animatedObject.setZIndex(5);
+        scene.addGameObject(animatedObject);
+
+        // Collision demo: two objects - colliderB moves across colliderA
+        colliderA = new GameObject("collider_a",
+                new Transform(new Vector2f(-50f, 50f), new Vector2f(70f, 70f)));
+        colliderA.addSprite(new Sprite(new Vector4f(0.2f, 0.8f, 0.2f, 0.7f)));
+        colliderA.setZIndex(5);
+        scene.addGameObject(colliderA);
+
+        colliderB = new GameObject("collider_b",
+                new Transform(new Vector2f(-250f, 60f), new Vector2f(40f, 40f)));
+        colliderB.addSprite(new Sprite(new Vector4f(0.8f, 0.2f, 0.2f, 0.9f)));
+        colliderB.setZIndex(6);
+        scene.addGameObject(colliderB);
+
+        collisionTargets = new ArrayList<>();
+        collisionTargets.add(colliderA);
+        collisionTargets.add(colliderB);
+        wasColliding = false;
+
+        // Timer demo: prints a message every 2 seconds
+        messageTimer = new Timer(2.0f);
+        messageTimer.setAutoReset(true);
     }
 }
