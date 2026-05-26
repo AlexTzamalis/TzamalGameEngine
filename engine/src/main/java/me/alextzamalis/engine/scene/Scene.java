@@ -1,9 +1,10 @@
-package me.alextzamalis.engine;
+package me.alextzamalis.engine.scene;
 
-import org.joml.Vector2f;
-import org.joml.Vector4f;
+import me.alextzamalis.engine.graphics.BatchRenderer;
+import me.alextzamalis.engine.graphics.Camera2D;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
@@ -47,6 +48,16 @@ public class Scene {
      */
     public void removeGameObject(GameObject go) {
         gameObjects.remove(go);
+    }
+
+    /**
+     * Returns an unmodifiable view of the game objects in this scene.
+     * Used by the editor to inspect and display the scene hierarchy.
+     *
+     * @return read-only list of game objects.
+     */
+    public List<GameObject> getGameObjects() {
+        return Collections.unmodifiableList(gameObjects);
     }
 
     /**
@@ -103,7 +114,7 @@ public class Scene {
 
     /**
      * Disposes scene resources. Currently a no-op since individual
-     * textures/shaders are managed by {@link AssetManager}.
+     * textures/shaders are managed by the AssetManager.
      */
     public void dispose() {
         gameObjects.clear();

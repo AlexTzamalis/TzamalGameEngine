@@ -1,4 +1,4 @@
-package me.alextzamalis.engine;
+package me.alextzamalis.engine.graphics;
 
 import org.joml.Matrix4f;
 import org.joml.Vector2f;
@@ -46,7 +46,6 @@ import static org.lwjgl.opengl.GL20.*;
  *
  * @author Alexandros Tzamalis
  * @see BatchRenderer
- * @see AssetManager
  */
 public class Shader {
 

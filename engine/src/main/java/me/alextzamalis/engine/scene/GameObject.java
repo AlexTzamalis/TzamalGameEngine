@@ -1,4 +1,4 @@
-package me.alextzamalis.engine;
+package me.alextzamalis.engine.scene;
 
 /**
  * A lightweight game entity that combines a {@link Transform} and an

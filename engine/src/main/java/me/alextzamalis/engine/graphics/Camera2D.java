@@ -1,4 +1,4 @@
-package me.alextzamalis.engine;
+package me.alextzamalis.engine.graphics;
 
 import org.joml.Matrix4f;
 import org.joml.Vector2f;

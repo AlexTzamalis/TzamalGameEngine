@@ -1,4 +1,8 @@
-package me.alextzamalis.engine;
+package me.alextzamalis.engine.assets;
+
+import me.alextzamalis.engine.graphics.Shader;
+import me.alextzamalis.engine.graphics.Texture;
+import me.alextzamalis.engine.graphics.text.Font;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -25,6 +29,7 @@ public final class AssetManager {
 
     private static final Map<String, Shader> shaders = new HashMap<>();
     private static final Map<String, Texture> textures = new HashMap<>();
+    private static final Map<String, Font> fonts = new HashMap<>();
 
     private AssetManager() {
         // Static utility class.
@@ -51,7 +56,7 @@ public final class AssetManager {
         return shaders.get(name);
     }
 
-    // Texture management=
+    // Texture management
     /**
      * Returns a cached texture for the given file path, loading it
      * from disk if this is the first request.
@@ -80,11 +85,64 @@ public final class AssetManager {
         return textures.get(filePath);
     }
 
+    // Font management
+
     /**
-     * Disposes every cached shader and texture, then clears the maps.
+     * Loads a font from a file path at the given pixel size and caches
+     * it under a composite key of "path:size". Returns the cached font
+     * if it was already loaded at that size.
      *
-     * <p>Call this once during engine shutdown (typically from
-     * {@link Window.GameLifecycle#dispose()}).</p>
+     * @param ttfPath   path to the {@code .ttf} file.
+     * @param pixelSize desired rasterization size in pixels.
+     * @return the cached (or newly loaded) Font.
+     */
+    public static Font loadFont(String ttfPath, float pixelSize) {
+        String key = ttfPath + ":" + pixelSize;
+        Font cached = fonts.get(key);
+        if (cached != null) {
+            return cached;
+        }
+        Font font = new Font(ttfPath, pixelSize);
+        fonts.put(key, font);
+        return font;
+    }
+
+    /**
+     * Loads a font from a classpath resource at the given pixel size
+     * and caches it under a composite key.
+     *
+     * @param resourcePath classpath path (e.g. {@code "/fonts/default.ttf"}).
+     * @param pixelSize    desired rasterization size in pixels.
+     * @return the cached (or newly loaded) Font.
+     */
+    public static Font loadFontResource(String resourcePath, float pixelSize) {
+        String key = resourcePath + ":" + pixelSize;
+        Font cached = fonts.get(key);
+        if (cached != null) {
+            return cached;
+        }
+        Font font = Font.fromResource(resourcePath, pixelSize);
+        fonts.put(key, font);
+        return font;
+    }
+
+    /**
+     * Returns a previously loaded font, or {@code null} if the
+     * key has not been loaded yet.
+     *
+     * @param key the composite key used when the font was loaded
+     *            (format: "path:size").
+     * @return the cached Font, or {@code null}.
+     */
+    public static Font getFont(String key) {
+        return fonts.get(key);
+    }
+
+    /**
+     * Disposes every cached shader, texture, and font, then clears the maps.
+     *
+     * <p>Call this once during engine shutdown (typically from the
+     * game's dispose method).</p>
      */
     public static void disposeAll() {
         for (Shader s : shaders.values()) {
@@ -96,5 +154,10 @@ public final class AssetManager {
             t.dispose();
         }
         textures.clear();
+
+        for (Font f : fonts.values()) {
+            f.dispose();
+        }
+        fonts.clear();
     }
 }
