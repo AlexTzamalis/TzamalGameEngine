@@ -110,6 +110,9 @@ public final class Input {
     /** Middle mouse button (scroll-wheel click) */
     public static final int MOUSE_BUTTON_MIDDLE = GLFW_MOUSE_BUTTON_MIDDLE;
 
+    /** F1 function key */
+    public static final int KEY_F1 = GLFW_KEY_F1;
+
     //  Internal state
 
     /**
@@ -134,6 +137,9 @@ public final class Input {
 
     private static double scrollX;
     private static double scrollY;
+
+    private static boolean imguiWantsMouse = false;
+    private static boolean imguiWantsKeyboard = false;
 
     private Input() {
         // Utility class - no instances.
@@ -326,5 +332,29 @@ public final class Input {
      */
     public static double getScrollY() {
         return scrollY;
+    }
+
+    // ImGui capture state
+
+    /**
+     * Called by the ImGui integration layer each frame to update
+     * capture state. When ImGui wants the mouse or keyboard, game
+     * code should not process those inputs.
+     *
+     * Engine-internal. Game code should not call this.
+     */
+    public static void setImGuiCapture(boolean mouse, boolean keyboard) {
+        imguiWantsMouse = mouse;
+        imguiWantsKeyboard = keyboard;
+    }
+
+    /** @return true if ImGui is consuming mouse input this frame. */
+    public static boolean isImGuiCapturingMouse() {
+        return imguiWantsMouse;
+    }
+
+    /** @return true if ImGui is consuming keyboard input this frame. */
+    public static boolean isImGuiCapturingKeyboard() {
+        return imguiWantsKeyboard;
     }
 }

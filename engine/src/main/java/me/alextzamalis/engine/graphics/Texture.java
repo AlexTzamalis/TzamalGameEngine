@@ -42,6 +42,26 @@ public class Texture {
     private final int height;
 
     /**
+     * Wraps an already-created OpenGL texture ID. Used by engine
+     * subsystems (like the font rasterizer) that create textures
+     * directly via GL calls.
+     *
+     * <p>The caller is responsible for the GL texture's configuration
+     * (filtering, wrapping, format). This constructor simply records
+     * the ID so the texture can participate in batch rendering and
+     * be disposed through the normal lifecycle.</p>
+     *
+     * @param textureId the existing OpenGL texture object ID.
+     * @param width     texture width in pixels.
+     * @param height    texture height in pixels.
+     */
+    public Texture(int textureId, int width, int height) {
+        this.textureId = textureId;
+        this.width = width;
+        this.height = height;
+    }
+
+    /**
      * Loads an image from disk and uploads it as an OpenGL texture.
      *
      * <p>Supported formats include PNG, JPG, BMP, TGA, and any other

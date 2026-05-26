@@ -1,6 +1,8 @@
 package me.alextzamalis.engine;
 
 import me.alextzamalis.engine.core.Input;
+import me.alextzamalis.engine.editor.EditorManager;
+import me.alextzamalis.engine.editor.ImGuiLayer;
 
 import org.lwjgl.glfw.GLFWErrorCallback;
 import org.lwjgl.glfw.GLFWVidMode;
@@ -128,6 +130,9 @@ public class Window {
      */
     private long glfwWindow = NULL;
 
+    private ImGuiLayer imGuiLayer;
+    private EditorManager editorManager;
+
     // Construction
     /**
      * Prepares a window descriptor without actually creating the OS
@@ -185,12 +190,25 @@ public class Window {
         try {
             initGlfw();
             Input.install(glfwWindow);
+
+            imGuiLayer = new ImGuiLayer();
+            imGuiLayer.init(glfwWindow);
+            editorManager = new EditorManager();
+
             game.init(this);
             loop(game);
         } finally {
             game.dispose();
+            if (imGuiLayer != null) {
+                imGuiLayer.dispose();
+            }
             cleanup();
         }
+    }
+
+    /** @return the editor manager for registering scenes/cameras. */
+    public EditorManager getEditorManager() {
+        return editorManager;
     }
 
     /**
@@ -357,16 +375,13 @@ public class Window {
         while (!glfwWindowShouldClose(glfwWindow)) {
             glfwPollEvents();
 
+            // Start ImGui frame before game update so capture flags are available
+            imGuiLayer.beginFrame();
+
             double now = glfwGetTime();
             float deltaTime = (float) (now - lastTime);
             lastTime = now;
 
-            /*
-             * Clamp excessively large deltas. This can happen on the
-             * very first frame (asset loading) or if the OS suspended
-             * the process. A capped delta prevents physics explosions
-             * and teleporting sprites.
-             */
             if (deltaTime > 0.25f) {
                 deltaTime = 0.25f;
             }
@@ -375,6 +390,10 @@ public class Window {
 
             glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
             game.render();
+
+            // Editor overlay (ImGui widgets + render)
+            editorManager.update();
+            imGuiLayer.endFrame();
 
             glfwSwapBuffers(glfwWindow);
             Input.endFrame();

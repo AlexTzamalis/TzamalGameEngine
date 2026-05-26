@@ -6,13 +6,15 @@ import me.alextzamalis.engine.core.Input;
 import me.alextzamalis.engine.graphics.BatchRenderer;
 import me.alextzamalis.engine.graphics.Camera2D;
 import me.alextzamalis.engine.graphics.Shader;
+import me.alextzamalis.engine.graphics.text.Font;
+import me.alextzamalis.engine.graphics.text.TextRenderer;
 import me.alextzamalis.engine.screen.GameScreen;
 
 import org.joml.Vector4f;
 
 /**
  * A transparent overlay screen that pauses gameplay and renders a
- * dark tint over the play screen with a colored "PAUSED" indicator.
+ * dark tint with "PAUSED" text over the play screen.
  *
  * @author Alexandros Tzamalis
  */
@@ -21,6 +23,8 @@ public class DemoPauseScreen extends GameScreen {
     private Window window;
     private BatchRenderer batchRenderer;
     private Camera2D camera;
+    private Font font;
+    private Font smallFont;
 
     @Override
     public void init(Window window) {
@@ -29,6 +33,9 @@ public class DemoPauseScreen extends GameScreen {
         Shader shader = AssetManager.getShader("default");
         batchRenderer = new BatchRenderer(shader);
         camera = new Camera2D(window.getWidth(), window.getHeight());
+
+        font = AssetManager.loadFontResource("/fonts/default.ttf", 32f);
+        smallFont = AssetManager.loadFontResource("/fonts/default.ttf", 16f);
 
         System.out.println("[Pause] Pause screen initialised. Press ESC to resume.");
     }
@@ -56,11 +63,13 @@ public class DemoPauseScreen extends GameScreen {
         batchRenderer.drawQuad(-halfW, -halfH, w, h,
                 new Vector4f(0f, 0f, 0f, 0.5f));
 
-        // Centered "PAUSED" indicator block
-        float blockW = 120f;
-        float blockH = 60f;
-        batchRenderer.drawQuad(-blockW / 2f, -blockH / 2f, blockW, blockH,
-                new Vector4f(0.9f, 0.3f, 0.3f, 0.9f));
+        // "PAUSED" title centered on screen
+        TextRenderer.drawTextFullyCentered(batchRenderer, font, "PAUSED",
+                0f, 20f, new Vector4f(0.9f, 0.3f, 0.3f, 1f));
+
+        // Subtitle below
+        TextRenderer.drawTextFullyCentered(batchRenderer, smallFont, "Press ESC to resume",
+                0f, -30f, new Vector4f(0.8f, 0.8f, 0.8f, 0.9f));
 
         batchRenderer.endBatch();
         batchRenderer.flush();

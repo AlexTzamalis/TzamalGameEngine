@@ -26,7 +26,7 @@ public class Main implements Window.GameLifecycle {
     @Override
     public void init(Window window) {
         screenManager = new ScreenManager(window);
-        screenManager.pushScreen(new DemoPlayScreen());
+        screenManager.pushScreen(new DemoMenuScreen());
     }
 
     @Override

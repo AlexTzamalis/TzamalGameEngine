@@ -14,6 +14,8 @@ import me.alextzamalis.engine.scene.Scene;
 import me.alextzamalis.engine.scene.Sprite;
 import me.alextzamalis.engine.scene.Transform;
 
+import me.alextzamalis.engine.graphics.text.Font;
+import me.alextzamalis.engine.graphics.text.TextRenderer;
 import me.alextzamalis.engine.screen.GameScreen;
 import org.joml.Vector2f;
 import org.joml.Vector4f;
@@ -49,6 +51,10 @@ public class DemoPlayScreen extends GameScreen {
     private boolean wasColliding;
     private Timer messageTimer;
 
+    // HUD text
+    private Font hudFont;
+    private Camera2D hudCamera;
+
     @Override
     public void init(Window window) {
         this.window = window;
@@ -72,11 +78,20 @@ public class DemoPlayScreen extends GameScreen {
         createDemoObjects();
         createPhase4Demo();
 
-        System.out.println("[Game] Phase 5 demo initialised.");
+        // HUD font for on-screen controls text
+        hudFont = AssetManager.loadFontResource("/fonts/default.ttf", 12f);
+        hudCamera = new Camera2D(window.getWidth(), window.getHeight());
+
+        // Register with the editor so F1 can inspect this scene
+        window.getEditorManager().setActiveScene(scene);
+        window.getEditorManager().setActiveCamera(camera);
+
+        System.out.println("[Game] Phase 7 demo initialised.");
         System.out.println("[Game] Controls:");
         System.out.println("  WASD - Move camera");
         System.out.println("  Q/E  - Zoom in / out");
         System.out.println("  ESC  - Pause");
+        System.out.println("  F1   - Toggle editor");
         System.out.println("[Game] Watch the console for collision and timer events.");
     }
 
@@ -160,6 +175,27 @@ public class DemoPlayScreen extends GameScreen {
     @Override
     public void render() {
         scene.render(batchRenderer, camera);
+
+        // HUD overlay: render text in screen-space on top of the scene
+        int w = window.getWidth();
+        int h = window.getHeight();
+        hudCamera.adjustProjection(w, h);
+
+        float halfW = w / 2.0f;
+        float halfH = h / 2.0f;
+
+        batchRenderer.setProjection(hudCamera.getProjectionViewMatrix());
+        batchRenderer.beginBatch();
+
+        Vector4f hudColor = new Vector4f(1f, 1f, 1f, 0.7f);
+        float hudX = -halfW + 10f;
+        float hudY = halfH - 20f;
+
+        TextRenderer.drawText(batchRenderer, hudFont, "WASD - Move  Q/E - Zoom  ESC - Pause  F1 - Editor",
+                hudX, hudY, hudColor);
+
+        batchRenderer.endBatch();
+        batchRenderer.flush();
     }
 
     @Override
