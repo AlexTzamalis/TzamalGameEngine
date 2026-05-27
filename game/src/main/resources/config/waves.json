@@ -1,0 +1,58 @@
+{
+  "bossWaveInterval": 10,
+  "bossEnemyId": "boss",
+  "bossMinionCount": 24,
+  "stages": [
+    {
+      "name": "oil_field",
+      "startWave": 1,
+      "endWave": 10,
+      "spawnWeights": {
+        "grunt": 65,
+        "runner": 30,
+        "tank": 5
+      },
+      "baseEnemyCount": 10,
+      "enemyCountPerWave": 3,
+      "spawnInterval": 0.4,
+      "spawnIntervalDecay": 0.015,
+      "spawnBatchSize": 2,
+      "spawnBatchPerWave": 1,
+      "spawnBatchMax": 5
+    },
+    {
+      "name": "desert",
+      "startWave": 11,
+      "endWave": 20,
+      "spawnWeights": {
+        "grunt": 35,
+        "runner": 45,
+        "tank": 20
+      },
+      "baseEnemyCount": 14,
+      "enemyCountPerWave": 4,
+      "spawnInterval": 0.32,
+      "spawnIntervalDecay": 0.012,
+      "spawnBatchSize": 3,
+      "spawnBatchPerWave": 1,
+      "spawnBatchMax": 6
+    },
+    {
+      "name": "ocean_platform",
+      "startWave": 21,
+      "endWave": 999,
+      "spawnWeights": {
+        "grunt": 15,
+        "runner": 45,
+        "tank": 40
+      },
+      "baseEnemyCount": 18,
+      "enemyCountPerWave": 5,
+      "spawnInterval": 0.25,
+      "spawnIntervalDecay": 0.01,
+      "spawnBatchSize": 4,
+      "spawnBatchPerWave": 1,
+      "spawnBatchMax": 8
+    }
+  ]
+}

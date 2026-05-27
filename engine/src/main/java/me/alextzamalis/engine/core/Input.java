@@ -286,6 +286,15 @@ public final class Input {
     }
 
     /**
+     * Returns {@code true} only on the first frame the mouse button
+     * transitions from pressed to released.
+     */
+    public static boolean isMouseButtonJustReleased(int button) {
+        return button >= 0 && button < NUM_MOUSE_BUTTONS
+                && !currentMouseButtons[button] && previousMouseButtons[button];
+    }
+
+    /**
      * Returns the current X coordinate of the cursor in
      * window-space pixels, with the origin at the top-left corner.
      *

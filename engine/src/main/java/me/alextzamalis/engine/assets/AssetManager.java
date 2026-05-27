@@ -4,6 +4,8 @@ import me.alextzamalis.engine.graphics.Shader;
 import me.alextzamalis.engine.graphics.Texture;
 import me.alextzamalis.engine.graphics.text.Font;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -56,6 +58,29 @@ public final class AssetManager {
         return shaders.get(name);
     }
 
+    /**
+     * Returns the "default" batch-rendering shader, loading it from
+     * classpath resources and uploading the 16 texture slot uniforms
+     * if this is the first call. Subsequent calls return the cached
+     * instance immediately.
+     *
+     * @return the default shader, ready to use with {@code BatchRenderer}.
+     */
+    public static Shader getOrLoadDefaultShader() {
+        Shader cached = shaders.get("default");
+        if (cached != null) {
+            return cached;
+        }
+        Shader shader = Shader.fromResource("/shaders/default.vert", "/shaders/default.frag");
+        shader.bind();
+        for (int i = 0; i < 16; i++) {
+            shader.uploadTexture("uTextures[" + i + "]", i);
+        }
+        shader.unbind();
+        shaders.put("default", shader);
+        return shader;
+    }
+
     // Texture management
     /**
      * Returns a cached texture for the given file path, loading it
@@ -71,6 +96,47 @@ public final class AssetManager {
         }
         Texture tex = new Texture(filePath);
         textures.put(filePath, tex);
+        return tex;
+    }
+
+    /**
+     * Returns a cached texture for the given classpath resource path,
+     * loading it from the classpath if this is the first request.
+     *
+     * @param resourcePath classpath path (e.g. {@code "/atlas/img.png"}).
+     * @return the cached (or newly loaded) Texture.
+     */
+    public static Texture loadTextureResource(String resourcePath) {
+        Texture cached = textures.get(resourcePath);
+        if (cached != null) {
+            return cached;
+        }
+        Texture tex = Texture.fromResource(resourcePath);
+        textures.put(resourcePath, tex);
+        return tex;
+    }
+
+    /**
+     * Loads a classpath texture if present, or returns {@code null} when the
+     * resource is missing or cannot be decoded.
+     *
+     * @param resourcePath classpath path (e.g. {@code "/atlas/img.png"}).
+     * @return the cached (or newly loaded) Texture, or {@code null}.
+     */
+    public static Texture tryLoadTextureResource(String resourcePath) {
+        Texture cached = textures.get(resourcePath);
+        if (cached != null) {
+            return cached;
+        }
+        try (InputStream is = AssetManager.class.getResourceAsStream(resourcePath)) {
+            if (is == null) {
+                return null;
+            }
+        } catch (IOException e) {
+            return null;
+        }
+        Texture tex = Texture.fromResource(resourcePath);
+        textures.put(resourcePath, tex);
         return tex;
     }
 

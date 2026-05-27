@@ -1,6 +1,7 @@
 package me.alextzamalis.engine;
 
 import me.alextzamalis.engine.core.Input;
+import me.alextzamalis.engine.audio.AudioManager;
 import me.alextzamalis.engine.editor.EditorManager;
 import me.alextzamalis.engine.editor.ImGuiLayer;
 
@@ -123,6 +124,10 @@ public class Window {
     private final String title;
     private int width;
     private int height;
+    private int windowedWidth;
+    private int windowedHeight;
+    private boolean fullscreen;
+    private int targetFps = 60;
 
     /**
      * The GLFW window handle. A value of {@link org.lwjgl.system.MemoryUtil#NULL NULL}
@@ -161,6 +166,8 @@ public class Window {
         this.title = title;
         this.width = width;
         this.height = height;
+        this.windowedWidth = width;
+        this.windowedHeight = height;
     }
 
     // Public API
@@ -190,6 +197,7 @@ public class Window {
         try {
             initGlfw();
             Input.install(glfwWindow);
+            AudioManager.init();
 
             imGuiLayer = new ImGuiLayer();
             imGuiLayer.init(glfwWindow);
@@ -272,6 +280,91 @@ public class Window {
         glfwSetWindowShouldClose(glfwWindow, true);
     }
 
+    /**
+     * Switches between windowed and exclusive fullscreen on the primary monitor.
+     *
+     * @param fullscreen true for fullscreen, false for windowed mode.
+     */
+    public void setFullscreen(boolean fullscreen) {
+        if (glfwWindow == NULL) {
+            return;
+        }
+
+        if (fullscreen == this.fullscreen) {
+            return;
+        }
+
+        if (fullscreen) {
+            windowedWidth = width;
+            windowedHeight = height;
+            long monitor = glfwGetPrimaryMonitor();
+            GLFWVidMode mode = glfwGetVideoMode(monitor);
+            if (mode != null) {
+                glfwSetWindowMonitor(glfwWindow, monitor, 0, 0, mode.width(), mode.height(), mode.refreshRate());
+            }
+        } else {
+            glfwSetWindowMonitor(glfwWindow, NULL, 100, 100, windowedWidth, windowedHeight, GLFW_DONT_CARE);
+            width = windowedWidth;
+            height = windowedHeight;
+            glViewport(0, 0, width, height);
+        }
+        this.fullscreen = fullscreen;
+    }
+
+    /** @return true when the window is in exclusive fullscreen mode. */
+    public boolean isFullscreen() {
+        return fullscreen;
+    }
+
+    /**
+     * Resizes the window in windowed mode and stores the dimensions for fullscreen restore.
+     *
+     * @param w width in pixels.
+     * @param h height in pixels.
+     */
+    public void setWindowedSize(int w, int h) {
+        if (w <= 0 || h <= 0) {
+            return;
+        }
+        windowedWidth = w;
+        windowedHeight = h;
+        if (glfwWindow == NULL || fullscreen) {
+            return;
+        }
+        glfwSetWindowSize(glfwWindow, w, h);
+        width = w;
+        height = h;
+        glViewport(0, 0, w, h);
+    }
+
+    /**
+     * Enables or disables user-driven window resizing.
+     *
+     * @param resizable true to allow drag-resize, false for fixed preset sizes only.
+     */
+    public void setResizable(boolean resizable) {
+        if (glfwWindow != NULL) {
+            glfwSetWindowAttrib(glfwWindow, GLFW_RESIZABLE, resizable ? GLFW_TRUE : GLFW_FALSE);
+        }
+    }
+
+    /**
+     * Sets the target frame rate. Values {@code <= 0} mean uncapped (no V-Sync, no sleep).
+     *
+     * @param fps target frames per second, or 0 for MAX.
+     */
+    public void setTargetFps(int fps) {
+        this.targetFps = fps;
+        if (glfwWindow != NULL) {
+            glfwSwapInterval(fps <= 0 ? 0 : 0);
+        }
+    }
+
+    /** @return the configured target FPS, or 0 for uncapped. */
+    public int getTargetFps() {
+        return targetFps;
+    }
+
     //  GLFW initialisation (private!!)
     /**
      * Boots GLFW, sets window hints, creates the window, centres it
@@ -304,7 +397,7 @@ public class Window {
         glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
         glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GLFW_TRUE);
         glfwWindowHint(GLFW_VISIBLE, GLFW_FALSE);
-        glfwWindowHint(GLFW_RESIZABLE, GLFW_TRUE);
+        glfwWindowHint(GLFW_RESIZABLE, GLFW_FALSE);
 
         glfwWindow = glfwCreateWindow(width, height, title, NULL, NULL);
         if (glfwWindow == NULL) {
@@ -332,7 +425,7 @@ public class Window {
         }
 
         glfwMakeContextCurrent(glfwWindow);
-        glfwSwapInterval(1); // V-Sync: swap every monitor refresh
+        glfwSwapInterval(targetFps <= 0 ? 0 : 0);
         GL.createCapabilities();
 
         glEnable(GL_BLEND);
@@ -371,8 +464,10 @@ public class Window {
         glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
 
         double lastTime = glfwGetTime();
+        double frameStart = lastTime;
 
         while (!glfwWindowShouldClose(glfwWindow)) {
+            frameStart = glfwGetTime();
             glfwPollEvents();
 
             // Start ImGui frame before game update so capture flags are available
@@ -387,6 +482,7 @@ public class Window {
             }
 
             game.update(deltaTime);
+            AudioManager.update();
 
             glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
             game.render();
@@ -397,6 +493,14 @@ public class Window {
 
             glfwSwapBuffers(glfwWindow);
             Input.endFrame();
+
+            if (targetFps > 0) {
+                double frameBudget = 1.0 / targetFps;
+                double elapsed = glfwGetTime() - frameStart;
+                while (elapsed < frameBudget) {
+                    elapsed = glfwGetTime() - frameStart;
+                }
+            }
         }
     }
 
@@ -408,6 +512,7 @@ public class Window {
      * so resources are freed even if the game throws an exception.</p>
      */
     private void cleanup() {
+        AudioManager.dispose();
         if (glfwWindow != NULL) {
             glfwFreeCallbacks(glfwWindow);
             glfwDestroyWindow(glfwWindow);

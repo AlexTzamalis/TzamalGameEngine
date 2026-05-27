@@ -58,6 +58,9 @@ public class SceneHierarchyPanel {
             }
         }
 
+        ImGui.separator();
+        ImGui.text("Objects: " + objects.size());
+
         ImGui.end();
     }
 }

@@ -39,22 +39,32 @@ public class UIManager {
 
         for (int i = 0; i < elements.size(); i++) {
             UIElement el = elements.get(i);
-            if (el instanceof UIButton btn) {
-                btn.uiMouseX = uiMouseX;
-                btn.uiMouseY = uiMouseY;
-            }
+            propagateMouse(el, uiMouseX, uiMouseY);
             propagateMouseToPanel(el, uiMouseX, uiMouseY);
             el.update(dt);
+        }
+    }
+
+    private void propagateMouse(UIElement el, float mx, float my) {
+        if (el instanceof UIButton btn) {
+            btn.uiMouseX = mx;
+            btn.uiMouseY = my;
+        } else if (el instanceof UITexturedButton tbtn) {
+            tbtn.uiMouseX = mx;
+            tbtn.uiMouseY = my;
+        } else if (el instanceof UIToggle toggle) {
+            toggle.uiMouseX = mx;
+            toggle.uiMouseY = my;
+        } else if (el instanceof UICycleButton cycle) {
+            cycle.uiMouseX = mx;
+            cycle.uiMouseY = my;
         }
     }
 
     private void propagateMouseToPanel(UIElement el, float mx, float my) {
         if (el instanceof UIPanel panel) {
             for (UIElement child : panel.getChildren()) {
-                if (child instanceof UIButton btn) {
-                    btn.uiMouseX = mx;
-                    btn.uiMouseY = my;
-                }
+                propagateMouse(child, mx, my);
                 propagateMouseToPanel(child, mx, my);
             }
         }

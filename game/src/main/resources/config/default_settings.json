@@ -1,0 +1,8 @@
+{
+  "masterVolume": 0.8,
+  "musicVolume": 0.8,
+  "sfxVolume": 0.8,
+  "fullscreen": false,
+  "resolutionIndex": 1,
+  "targetFps": 60
+}

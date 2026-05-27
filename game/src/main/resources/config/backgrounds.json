@@ -1,0 +1,23 @@
+{
+  "basePath": "/backgrounds",
+  "defaultFile": "orig_big.png",
+  "fallbackFile": "orig.png",
+  "blocks": [
+    {
+      "backgroundFolder": "background 1",
+      "musicThemes": ["Overworld"]
+    },
+    {
+      "backgroundFolder": "background 2",
+      "musicThemes": ["Dungeons"]
+    },
+    {
+      "backgroundFolder": "background 3",
+      "musicThemes": ["Battle"]
+    },
+    {
+      "backgroundFolder": "background 4",
+      "musicThemes": ["Towns"]
+    }
+  ]
+}

@@ -21,12 +21,14 @@ dependencies {
     implementation 'org.lwjgl:lwjgl'
     implementation 'org.lwjgl:lwjgl-glfw'
     implementation 'org.lwjgl:lwjgl-opengl'
+    implementation 'org.lwjgl:lwjgl-openal'
     implementation 'org.lwjgl:lwjgl-stb'
 
     /* Platform-specific native JARs (only needed at runtime)*/
     runtimeOnly "org.lwjgl:lwjgl::${rootProject.ext.lwjglNatives}"
     runtimeOnly "org.lwjgl:lwjgl-glfw::${rootProject.ext.lwjglNatives}"
     runtimeOnly "org.lwjgl:lwjgl-opengl::${rootProject.ext.lwjglNatives}"
+    runtimeOnly "org.lwjgl:lwjgl-openal::${rootProject.ext.lwjglNatives}"
     runtimeOnly "org.lwjgl:lwjgl-stb::${rootProject.ext.lwjglNatives}"
 
     /* JOML (api game code needs vectors/matrices directly)*/
