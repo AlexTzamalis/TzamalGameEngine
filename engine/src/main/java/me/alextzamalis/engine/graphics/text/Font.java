@@ -225,11 +225,15 @@ public class Font {
                 float w = quad.x1() - quad.x0();
                 float h = quad.y1() - quad.y0();
 
-                // STB UVs use top-left origin (t=0 at top).
-                // OpenGL textures have V=0 at bottom (since we don't flip the bitmap).
-                // Convert: glV = 1.0 - stbT
-                Vector2f uvMin = new Vector2f(quad.s0(), 1.0f - quad.t1());
-                Vector2f uvMax = new Vector2f(quad.s1(), 1.0f - quad.t0());
+                // The STB bitmap is uploaded to OpenGL without row-flipping,
+                // so STB row 0 (top of atlas) lands at V=0 (bottom of GL
+                // texture). To render glyphs right-side-up we pair the quad
+                // bottom (uvMin.y) with t1 (visual glyph bottom, higher V)
+                // and the quad top (uvMax.y) with t0 (visual glyph top,
+                // lower V). This flips the sampling direction to compensate
+                // for the inverted texture.
+                Vector2f uvMin = new Vector2f(quad.s0(), quad.t1());
+                Vector2f uvMax = new Vector2f(quad.s1(), quad.t0());
 
                 glyphsOut[i] = new Glyph(
                         uvMin, uvMax,

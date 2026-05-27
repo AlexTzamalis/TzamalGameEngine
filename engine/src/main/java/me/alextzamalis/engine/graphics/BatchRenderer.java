@@ -321,6 +321,154 @@ public class BatchRenderer {
     }
 
     /**
+     * Draws a nine-slice scaled textured quad (corners fixed, edges and center stretch).
+     *
+     * @param regionPixelW source region width in pixels (for inset scaling).
+     * @param regionPixelH source region height in pixels.
+     */
+    public void drawNineSlice(float x, float y, float width, float height,
+                              Texture texture, Vector4f tint,
+                              Vector2f uvMin, Vector2f uvMax,
+                              NineSliceInsets insets, int regionPixelW, int regionPixelH) {
+        if (insets == null || regionPixelW <= 0 || regionPixelH <= 0) {
+            drawQuad(x, y, width, height, texture, tint, uvMin, uvMax);
+            return;
+        }
+
+        float dstLeft = insets.left * (width / regionPixelW);
+        float dstRight = insets.right * (width / regionPixelW);
+        float dstBottom = insets.bottom * (height / regionPixelH);
+        float dstTop = insets.top * (height / regionPixelH);
+
+        float midW = width - dstLeft - dstRight;
+        float midH = height - dstBottom - dstTop;
+        if (midW < 0f) {
+            float scale = width / (dstLeft + dstRight);
+            dstLeft *= scale;
+            dstRight *= scale;
+            midW = 0f;
+        }
+        if (midH < 0f) {
+            float scale = height / (dstBottom + dstTop);
+            dstBottom *= scale;
+            dstTop *= scale;
+            midH = 0f;
+        }
+
+        float uSpan = uvMax.x - uvMin.x;
+        float vSpan = uvMax.y - uvMin.y;
+        float uLeft = uvMin.x + (insets.left / (float) regionPixelW) * uSpan;
+        float uRight = uvMax.x - (insets.right / (float) regionPixelW) * uSpan;
+        float vBottom = uvMin.y + (insets.bottom / (float) regionPixelH) * vSpan;
+        float vTop = uvMax.y - (insets.top / (float) regionPixelH) * vSpan;
+
+        float[] xs = {x, x + dstLeft, x + dstLeft + midW, x + width};
+        float[] ys = {y, y + dstBottom, y + dstBottom + midH, y + height};
+        float[] us = {uvMin.x, uLeft, uRight, uvMax.x};
+        float[] vs = {uvMin.y, vBottom, vTop, uvMax.y};
+
+        for (int row = 0; row < 3; row++) {
+            for (int col = 0; col < 3; col++) {
+                float qw = xs[col + 1] - xs[col];
+                float qh = ys[row + 1] - ys[row];
+                if (qw <= 0f || qh <= 0f) {
+                    continue;
+                }
+                Vector2f cellUvMin = new Vector2f(us[col], vs[row]);
+                Vector2f cellUvMax = new Vector2f(us[col + 1], vs[row + 1]);
+                drawQuad(xs[col], ys[row], qw, qh, texture, tint, cellUvMin, cellUvMax);
+            }
+        }
+    }
+
+    // Rotated quad overloads -- CPU-side vertex rotation around quad center
+
+    /**
+     * Adds a solid-color quad to the batch, rotated around its center.
+     *
+     * @param x           left edge X position (before rotation).
+     * @param y           bottom edge Y position (before rotation).
+     * @param width       quad width.
+     * @param height      quad height.
+     * @param rotationDeg rotation in degrees (counter-clockwise).
+     * @param color       RGBA color.
+     */
+    public void drawQuad(float x, float y, float width, float height,
+                         float rotationDeg, Vector4f color) {
+        if (vertexCount + VERTICES_PER_QUAD > maxVertices) {
+            autoFlush();
+        }
+
+        float texId = -1.0f;
+        float cx = x + width * 0.5f;
+        float cy = y + height * 0.5f;
+        float rad = (float) Math.toRadians(rotationDeg);
+        float cos = (float) Math.cos(rad);
+        float sin = (float) Math.sin(rad);
+
+        float hw = width * 0.5f;
+        float hh = height * 0.5f;
+
+        addRotatedVertex(cx, cy, -hw, -hh, cos, sin, color, 0f, 0f, texId);
+        addRotatedVertex(cx, cy,  hw, -hh, cos, sin, color, 1f, 0f, texId);
+        addRotatedVertex(cx, cy,  hw,  hh, cos, sin, color, 1f, 1f, texId);
+        addRotatedVertex(cx, cy, -hw,  hh, cos, sin, color, 0f, 1f, texId);
+    }
+
+    /**
+     * Adds a textured quad with tint to the batch, rotated around its center.
+     *
+     * @param x           left edge X position (before rotation).
+     * @param y           bottom edge Y position (before rotation).
+     * @param width       quad width.
+     * @param height      quad height.
+     * @param rotationDeg rotation in degrees (counter-clockwise).
+     * @param texture     the texture to sample.
+     * @param tint        RGBA tint color.
+     * @param uvMin       bottom-left UV coordinate.
+     * @param uvMax       top-right UV coordinate.
+     */
+    public void drawQuad(float x, float y, float width, float height,
+                         float rotationDeg, Texture texture, Vector4f tint,
+                         Vector2f uvMin, Vector2f uvMax) {
+        if (vertexCount + VERTICES_PER_QUAD > maxVertices) {
+            autoFlush();
+        }
+
+        float texIdVal = getTextureSlot(texture);
+        if (texIdVal == -1.0f) {
+            autoFlush();
+            texIdVal = getTextureSlot(texture);
+        }
+
+        float cx = x + width * 0.5f;
+        float cy = y + height * 0.5f;
+        float rad = (float) Math.toRadians(rotationDeg);
+        float cos = (float) Math.cos(rad);
+        float sin = (float) Math.sin(rad);
+
+        float hw = width * 0.5f;
+        float hh = height * 0.5f;
+
+        addRotatedVertex(cx, cy, -hw, -hh, cos, sin, tint, uvMin.x, uvMin.y, texIdVal);
+        addRotatedVertex(cx, cy,  hw, -hh, cos, sin, tint, uvMax.x, uvMin.y, texIdVal);
+        addRotatedVertex(cx, cy,  hw,  hh, cos, sin, tint, uvMax.x, uvMax.y, texIdVal);
+        addRotatedVertex(cx, cy, -hw,  hh, cos, sin, tint, uvMin.x, uvMax.y, texIdVal);
+    }
+
+    /**
+     * Applies rotation to a corner offset and appends the vertex.
+     * Rotated position = center + rotation_matrix * offset.
+     */
+    private void addRotatedVertex(float cx, float cy, float ox, float oy,
+                                  float cos, float sin, Vector4f color,
+                                  float u, float v, float texId) {
+        float rx = cx + ox * cos - oy * sin;
+        float ry = cy + ox * sin + oy * cos;
+        addVertex(rx, ry, color, u, v, texId);
+    }
+
+    /**
      * Deletes the VAO, VBO, and EBO.
      *
      * <p>Does not delete the shader, which is owned externally

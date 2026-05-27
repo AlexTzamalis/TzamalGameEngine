@@ -1,6 +1,8 @@
 package me.alextzamalis.engine.screen;
 
 import me.alextzamalis.engine.Window;
+import me.alextzamalis.engine.event.Event;
+import me.alextzamalis.engine.event.EventBus;
 
 import java.util.ArrayDeque;
 import java.util.ArrayList;
@@ -55,6 +57,7 @@ public class ScreenManager {
         }
 
         screen.onEnter();
+        EventBus.publish(new Event("screen.pushed"));
     }
 
     /**
@@ -76,6 +79,8 @@ public class ScreenManager {
         if (newTop != null) {
             newTop.onEnter();
         }
+
+        EventBus.publish(new Event("screen.popped"));
     }
 
     /**
@@ -101,6 +106,7 @@ public class ScreenManager {
         }
 
         screen.onEnter();
+        EventBus.publish(new Event("screen.swapped"));
     }
 
     /**

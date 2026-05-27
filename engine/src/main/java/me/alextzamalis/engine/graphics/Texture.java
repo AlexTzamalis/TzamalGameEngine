@@ -1,7 +1,10 @@
 package me.alextzamalis.engine.graphics;
 
 import org.lwjgl.system.MemoryStack;
+import org.lwjgl.system.MemoryUtil;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.nio.ByteBuffer;
 import java.nio.IntBuffer;
 
@@ -115,6 +118,84 @@ public class Texture {
                     width, height, 0, format, GL_UNSIGNED_BYTE, pixels);
 
             stbi_image_free(pixels);
+        }
+    }
+
+    /**
+     * Loads an image from a classpath resource and uploads it as an OpenGL texture.
+     *
+     * <p>This works identically to the file-path constructor but reads bytes
+     * from the classpath via {@link Class#getResourceAsStream}. Resource
+     * paths should start with {@code /} for absolute classpath resolution
+     * (e.g. {@code "/atlas/img.png"}).</p>
+     *
+     * @param resourcePath classpath path to the image resource.
+     * @return a ready-to-use Texture instance.
+     * @throws RuntimeException if the resource cannot be found or decoded.
+     */
+    public static Texture fromResource(String resourcePath) {
+        byte[] data;
+        try (InputStream is = Texture.class.getResourceAsStream(resourcePath)) {
+            if (is == null) {
+                throw new RuntimeException("Texture resource not found: " + resourcePath);
+            }
+            data = is.readAllBytes();
+        } catch (IOException e) {
+            throw new RuntimeException("Failed to read texture resource: " + resourcePath, e);
+        }
+
+        ByteBuffer buf = MemoryUtil.memAlloc(data.length);
+        buf.put(data).flip();
+
+        try (MemoryStack stack = MemoryStack.stackPush()) {
+            IntBuffer wBuf = stack.mallocInt(1);
+            IntBuffer hBuf = stack.mallocInt(1);
+            IntBuffer channels = stack.mallocInt(1);
+
+            stbi_set_flip_vertically_on_load(true);
+            ByteBuffer pixels = stbi_load_from_memory(buf, wBuf, hBuf, channels, 0);
+            if (pixels == null) {
+                MemoryUtil.memFree(buf);
+                throw new RuntimeException(
+                        "Failed to decode texture resource: " + resourcePath
+                        + " -- " + stbi_failure_reason());
+            }
+
+            int width = wBuf.get(0);
+            int height = hBuf.get(0);
+            int numChannels = channels.get(0);
+
+            int internalFormat;
+            int format;
+            if (numChannels == 4) {
+                internalFormat = GL_RGBA;
+                format = GL_RGBA;
+            } else if (numChannels == 3) {
+                internalFormat = GL_RGB;
+                format = GL_RGB;
+            } else {
+                stbi_image_free(pixels);
+                MemoryUtil.memFree(buf);
+                throw new RuntimeException(
+                        "Unsupported channel count (" + numChannels
+                        + ") in texture resource: " + resourcePath);
+            }
+
+            int texId = glGenTextures();
+            glBindTexture(GL_TEXTURE_2D, texId);
+
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+
+            glTexImage2D(GL_TEXTURE_2D, 0, internalFormat,
+                    width, height, 0, format, GL_UNSIGNED_BYTE, pixels);
+
+            stbi_image_free(pixels);
+            MemoryUtil.memFree(buf);
+
+            return new Texture(texId, width, height);
         }
     }
 

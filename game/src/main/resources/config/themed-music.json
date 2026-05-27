@@ -1,0 +1,52 @@
+{
+  "themes": {
+    "Battle": [
+      "/audio/music/themed/Battle/Battle Mage.ogg",
+      "/audio/music/themed/Battle/Battle with Beasts.ogg",
+      "/audio/music/themed/Battle/Final Showdown.ogg",
+      "/audio/music/themed/Battle/I've Got Your Back! (Full).ogg",
+      "/audio/music/themed/Battle/I've Got Your Back! (Intro).ogg",
+      "/audio/music/themed/Battle/I've Got Your Back! (Main Loop).ogg",
+      "/audio/music/themed/Battle/If It's a Fight You Want.ogg",
+      "/audio/music/themed/Battle/It's Bossin Time.ogg"
+    ],
+    "Dungeons": [
+      "/audio/music/themed/Dungeons/Altered Paths.ogg",
+      "/audio/music/themed/Dungeons/Crystal Clear.ogg",
+      "/audio/music/themed/Dungeons/Heavy Air.ogg",
+      "/audio/music/themed/Dungeons/No Sunlight Here.ogg",
+      "/audio/music/themed/Dungeons/Outside The Ruins.ogg",
+      "/audio/music/themed/Dungeons/Spider's Grotto.ogg",
+      "/audio/music/themed/Dungeons/Temple of Tomb.ogg"
+    ],
+    "Overworld": [
+      "/audio/music/themed/Overworld/Journey Across the Blue.ogg",
+      "/audio/music/themed/Overworld/Long Road Ahead.ogg",
+      "/audio/music/themed/Overworld/On The Move.ogg",
+      "/audio/music/themed/Overworld/We're Bird People Now.ogg",
+      "/audio/music/themed/Overworld/World Travelers.ogg"
+    ],
+    "Towns": [
+      "/audio/music/themed/Towns/Bustling Streets.ogg",
+      "/audio/music/themed/Towns/Farm Life.ogg",
+      "/audio/music/themed/Towns/Ghost Alley.ogg",
+      "/audio/music/themed/Towns/Merch City.ogg",
+      "/audio/music/themed/Towns/Remnants of What Once Was.ogg",
+      "/audio/music/themed/Towns/Returning Home.ogg",
+      "/audio/music/themed/Towns/Smooth As Glass.ogg"
+    ],
+    "Various Themes": [
+      "/audio/music/themed/Various Themes/A Little R & R.ogg",
+      "/audio/music/themed/Various Themes/Fisticuffs and Ale.ogg",
+      "/audio/music/themed/Various Themes/Hall of the King.ogg",
+      "/audio/music/themed/Various Themes/How Did We Do.ogg",
+      "/audio/music/themed/Various Themes/Minigame Monkey.ogg",
+      "/audio/music/themed/Various Themes/Origins.ogg",
+      "/audio/music/themed/Various Themes/Outside the Colosseum.ogg",
+      "/audio/music/themed/Various Themes/Past, Present, Future.ogg",
+      "/audio/music/themed/Various Themes/Simpler Times.ogg",
+      "/audio/music/themed/Various Themes/Victorious.ogg",
+      "/audio/music/themed/Various Themes/Waiting.ogg"
+    ]
+  }
+}

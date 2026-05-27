@@ -1,0 +1,276 @@
+{
+  "textures": {
+    "inventorySheet": "/ui/emojis-free/emoji style ui/Inventory_Spritesheet.png",
+    "buttons": "/ui/Sprite sheets/buttons/Square Buttons 26x26.png",
+    "dialogBig": "/ui/Sprite sheets/Dialouge UI/Premade dialog box  big.png",
+    "dialogMedium": "/ui/Sprite sheets/Dialouge UI/Premade dialog box medium.png",
+    "playButton": "/ui/Sprite sheets/UI Big Play Button.png",
+    "settingsMenu": "/ui/Sprite sheets/Setting menu.png",
+    "settingsControls": "/ui/Sprite sheets/UI Settings Buttons.png"
+  },
+  "regions": {
+    "menuButtonBlankNormal": {
+      "texture": "playButton",
+      "x": 0,
+      "y": 0,
+      "w": 96,
+      "h": 32,
+      "sliceLeft": 8,
+      "sliceRight": 8,
+      "sliceTop": 8,
+      "sliceBottom": 8
+    },
+    "menuButtonBlankHover": {
+      "texture": "playButton",
+      "x": 96,
+      "y": 0,
+      "w": 96,
+      "h": 32,
+      "sliceLeft": 8,
+      "sliceRight": 8,
+      "sliceTop": 8,
+      "sliceBottom": 8
+    },
+    "menuButtonPlayNormal": {
+      "texture": "playButton",
+      "x": 0,
+      "y": 32,
+      "w": 96,
+      "h": 32,
+      "sliceLeft": 8,
+      "sliceRight": 8,
+      "sliceTop": 8,
+      "sliceBottom": 8
+    },
+    "menuButtonPlayHover": {
+      "texture": "playButton",
+      "x": 96,
+      "y": 32,
+      "w": 96,
+      "h": 32,
+      "sliceLeft": 8,
+      "sliceRight": 8,
+      "sliceTop": 8,
+      "sliceBottom": 8
+    },
+    "settingsPanel": {
+      "texture": "settingsMenu",
+      "x": 0,
+      "y": 0,
+      "w": 128,
+      "h": 144,
+      "sliceLeft": 12,
+      "sliceRight": 12,
+      "sliceTop": 16,
+      "sliceBottom": 12
+    },
+    "settingsPanelBlank": {
+      "texture": "settingsMenu",
+      "x": 128,
+      "y": 0,
+      "w": 128,
+      "h": 144,
+      "sliceLeft": 12,
+      "sliceRight": 12,
+      "sliceTop": 12,
+      "sliceBottom": 12
+    },
+    "toggleOff": {
+      "texture": "settingsControls",
+      "x": 0,
+      "y": 88,
+      "w": 52,
+      "h": 22
+    },
+    "toggleOn": {
+      "texture": "settingsControls",
+      "x": 0,
+      "y": 112,
+      "w": 52,
+      "h": 22
+    },
+    "sliderTrackEmpty": {
+      "texture": "settingsControls",
+      "x": 0,
+      "y": 168,
+      "w": 80,
+      "h": 14
+    },
+    "sliderTrackFill": {
+      "texture": "settingsControls",
+      "x": 0,
+      "y": 184,
+      "w": 80,
+      "h": 14
+    },
+    "cycleButton": {
+      "texture": "settingsControls",
+      "x": 48,
+      "y": 208,
+      "w": 32,
+      "h": 32
+    },
+    "radioOff": {
+      "texture": "settingsControls",
+      "x": 0,
+      "y": 40,
+      "w": 24,
+      "h": 24
+    },
+    "radioOn": {
+      "texture": "settingsControls",
+      "x": 64,
+      "y": 64,
+      "w": 24,
+      "h": 24
+    },
+    "outline1x1": {
+      "texture": "inventorySheet",
+      "x": 302,
+      "y": 42,
+      "w": 22,
+      "h": 22
+    },
+    "outline1x2": {
+      "texture": "inventorySheet",
+      "x": 302,
+      "y": 42,
+      "w": 22,
+      "h": 46
+    },
+    "outline2x1": {
+      "texture": "inventorySheet",
+      "x": 276,
+      "y": 42,
+      "w": 46,
+      "h": 22
+    },
+    "outline2x2": {
+      "texture": "inventorySheet",
+      "x": 276,
+      "y": 68,
+      "w": 46,
+      "h": 46
+    },
+    "outline3x2": {
+      "texture": "inventorySheet",
+      "x": 248,
+      "y": 130,
+      "w": 68,
+      "h": 46
+    },
+    "slotLarge": {
+      "texture": "inventorySheet",
+      "x": 276,
+      "y": 68,
+      "w": 46,
+      "h": 46
+    },
+    "slotMedium": {
+      "texture": "inventorySheet",
+      "x": 248,
+      "y": 130,
+      "w": 68,
+      "h": 22
+    },
+    "heartFull": {
+      "texture": "inventorySheet",
+      "x": 16,
+      "y": 24,
+      "w": 16,
+      "h": 14
+    },
+    "heartEmpty": {
+      "texture": "inventorySheet",
+      "x": 16,
+      "y": 40,
+      "w": 16,
+      "h": 14
+    },
+    "buttonBrownNormal": {
+      "texture": "buttons",
+      "x": 0,
+      "y": 96,
+      "w": 26,
+      "h": 26
+    },
+    "buttonBrownPressed": {
+      "texture": "buttons",
+      "x": 48,
+      "y": 96,
+      "w": 26,
+      "h": 26
+    },
+    "buttonBrownHover": {
+      "texture": "buttons",
+      "x": 48,
+      "y": 96,
+      "w": 26,
+      "h": 26
+    },
+    "buttonGreenNormal": {
+      "texture": "buttons",
+      "x": 0,
+      "y": 0,
+      "w": 26,
+      "h": 26
+    },
+    "buttonGreenPressed": {
+      "texture": "buttons",
+      "x": 48,
+      "y": 0,
+      "w": 26,
+      "h": 26
+    },
+    "buttonRedNormal": {
+      "texture": "buttons",
+      "x": 0,
+      "y": 144,
+      "w": 26,
+      "h": 26
+    },
+    "buttonRedPressed": {
+      "texture": "buttons",
+      "x": 48,
+      "y": 144,
+      "w": 26,
+      "h": 26
+    },
+    "buttonBlueNormal": {
+      "texture": "buttons",
+      "x": 0,
+      "y": 48,
+      "w": 26,
+      "h": 26
+    },
+    "buttonBluePressed": {
+      "texture": "buttons",
+      "x": 48,
+      "y": 48,
+      "w": 26,
+      "h": 26
+    },
+    "dialogBigPanel": {
+      "texture": "dialogBig",
+      "x": 0,
+      "y": 0,
+      "w": 304,
+      "h": 64,
+      "sliceLeft": 16,
+      "sliceRight": 16,
+      "sliceTop": 12,
+      "sliceBottom": 12
+    },
+    "dialogMediumPanel": {
+      "texture": "dialogMedium",
+      "x": 0,
+      "y": 0,
+      "w": 240,
+      "h": 64,
+      "sliceLeft": 16,
+      "sliceRight": 16,
+      "sliceTop": 12,
+      "sliceBottom": 12
+    }
+  }
+}

@@ -1,0 +1,7 @@
+{
+  "entries": [
+    { "type": "weapon", "weight": 65 },
+    { "type": "expansion", "weight": 10 },
+    { "type": "gear", "weight": 25 }
+  ]
+}

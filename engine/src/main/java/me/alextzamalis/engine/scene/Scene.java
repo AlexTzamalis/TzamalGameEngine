@@ -99,12 +99,22 @@ public class Scene {
             float y = t.position.y;
             float w = t.scale.x;
             float h = t.scale.y;
+            float rot = t.rotation;
 
-            if (sprite.texture != null) {
-                batch.drawQuad(x, y, w, h, sprite.texture, sprite.color,
-                        sprite.uvMin, sprite.uvMax);
+            if (rot != 0f) {
+                if (sprite.texture != null) {
+                    batch.drawQuad(x, y, w, h, rot, sprite.texture, sprite.color,
+                            sprite.uvMin, sprite.uvMax);
+                } else {
+                    batch.drawQuad(x, y, w, h, rot, sprite.color);
+                }
             } else {
-                batch.drawQuad(x, y, w, h, sprite.color);
+                if (sprite.texture != null) {
+                    batch.drawQuad(x, y, w, h, sprite.texture, sprite.color,
+                            sprite.uvMin, sprite.uvMax);
+                } else {
+                    batch.drawQuad(x, y, w, h, sprite.color);
+                }
             }
         }
 

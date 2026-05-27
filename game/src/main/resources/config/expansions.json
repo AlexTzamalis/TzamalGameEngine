@@ -1,0 +1,48 @@
+{
+  "expansions": [
+    {
+      "id": "expand_1x1",
+      "name": "Cell Unlock 1x1",
+      "cellWidth": 1,
+      "cellHeight": 1,
+      "weight": 30,
+      "colorR": 0.45,
+      "colorG": 0.75,
+      "colorB": 0.5,
+      "colorA": 1.0
+    },
+    {
+      "id": "expand_1x2",
+      "name": "Cell Unlock 1x2",
+      "cellWidth": 1,
+      "cellHeight": 2,
+      "weight": 25,
+      "colorR": 0.4,
+      "colorG": 0.65,
+      "colorB": 0.85,
+      "colorA": 1.0
+    },
+    {
+      "id": "expand_2x1",
+      "name": "Cell Unlock 2x1",
+      "cellWidth": 2,
+      "cellHeight": 1,
+      "weight": 25,
+      "colorR": 0.85,
+      "colorG": 0.6,
+      "colorB": 0.35,
+      "colorA": 1.0
+    },
+    {
+      "id": "expand_2x2",
+      "name": "Cell Unlock 2x2",
+      "cellWidth": 2,
+      "cellHeight": 2,
+      "weight": 15,
+      "colorR": 0.75,
+      "colorG": 0.45,
+      "colorB": 0.75,
+      "colorA": 1.0
+    }
+  ]
+}

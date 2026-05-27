@@ -7,6 +7,7 @@ import me.alextzamalis.engine.scene.GameObject;
 import me.alextzamalis.engine.scene.Sprite;
 import me.alextzamalis.engine.scene.Transform;
 import org.joml.Vector2f;
+import org.joml.Vector4f;
 
 /**
  * ImGui inspector panel for editing the selected GameObject's
@@ -90,11 +91,12 @@ public class InspectorPanel {
             go.setZIndex(intVal.get());
         }
 
-        // Sprite color (if present)
+        // Sprite section
         Sprite sprite = go.getSprite();
+        ImGui.spacing();
+        ImGui.separator();
+
         if (sprite != null) {
-            ImGui.spacing();
-            ImGui.separator();
             ImGui.text("Sprite");
 
             colorVal[0] = sprite.color.x;
@@ -103,6 +105,20 @@ public class InspectorPanel {
             colorVal[3] = sprite.color.w;
             if (ImGui.colorEdit4("Color", colorVal)) {
                 sprite.color.set(colorVal[0], colorVal[1], colorVal[2], colorVal[3]);
+            }
+
+            if (sprite.texture != null) {
+                ImGui.text(String.format("Texture: ID=%d  %dx%d",
+                        sprite.texture.getTextureId(),
+                        sprite.texture.getWidth(),
+                        sprite.texture.getHeight()));
+            } else {
+                ImGui.text("Texture: none (solid color)");
+            }
+        } else {
+            ImGui.text("No Sprite");
+            if (ImGui.button("Add Sprite")) {
+                go.addSprite(new Sprite(new Vector4f(1f, 1f, 1f, 1f)));
             }
         }
     }
